@@ -7,18 +7,18 @@ public class Contact {
     private String name;
     private String id;
     private String proImg;
-    private int[] curLoc;
-    private List<String> friendList;
-    private List<String> reqList;
+    private List<Double> curLoc;
+//    private List<String> friendList;
+//    private List<String> reqList;
 
-    public Contact(boolean openInfo, String name, String id, String proImg, int[] curLoc, List<String> friendList, List<String> reqList) {
+    public Contact(boolean openInfo, String name, String id, String proImg, List<Double> curLoc, List<String> friendList, List<String> reqList) {
         this.openInfo = openInfo;
         this.name = name;
         this.id = id;
         this.proImg = proImg;
         this.curLoc = curLoc;
-        this.friendList = friendList;
-        this.reqList = reqList;
+//        this.friendList = friendList;
+//        this.reqList = reqList;
     }
 
     public boolean isOpenInfo() {
@@ -37,15 +37,15 @@ public class Contact {
         return proImg;
     }
 
-    public int[] getCurLoc() {
+    public List<Double> getCurLoc() {
         return curLoc;
     }
 
-    public List<String> getFriendList() {
-        return friendList;
-    }
+//    public List<String> getFriendList() {
+//        return friendList;
+//    }
 
-    public List<String> getReqList() {
-        return reqList;
-    }
+//    public List<String> getReqList() {
+//        return reqList;
+//    }
 }
