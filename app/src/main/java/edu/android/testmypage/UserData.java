@@ -11,6 +11,8 @@ public class UserData {
     private String content;
     private String recDate;
 
+    public UserData(){}
+
     public UserData(String userId, String name, String photoInEssay, List<Double> locInEssay, String title, String content, String recDate) {
         this.userId = userId;
         this.name = name;

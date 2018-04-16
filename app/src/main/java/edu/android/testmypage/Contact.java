@@ -11,6 +11,8 @@ public class Contact {
 //    private List<String> friendList;
 //    private List<String> reqList;
 
+    public Contact(){}
+    public Contact(String name, String id, String proImg){}
     public Contact(boolean openInfo, String name, String id, String proImg, List<Double> curLoc, List<String> friendList, List<String> reqList) {
         this.openInfo = openInfo;
         this.name = name;
