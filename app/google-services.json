@@ -1,35 +1,35 @@
 {
   "project_info": {
-    "project_number": "853396032800",
-    "firebase_url": "https://testmypage01-ca13e.firebaseio.com",
-    "project_id": "testmypage01-ca13e",
-    "storage_bucket": "testmypage01-ca13e.appspot.com"
+    "project_number": "998483956421",
+    "firebase_url": "https://testmypage-f314b.firebaseio.com",
+    "project_id": "testmypage-f314b",
+    "storage_bucket": "testmypage-f314b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:853396032800:android:ff72ce24f9045171",
+        "mobilesdk_app_id": "1:998483956421:android:eecab7af7185a689",
         "android_client_info": {
-          "package_name": "edu.android.testmypage01"
+          "package_name": "edu.android.testmypage"
         }
       },
       "oauth_client": [
         {
-          "client_id": "853396032800-m25v63ese5l17ke58de3b7igqeh6qh9r.apps.googleusercontent.com",
+          "client_id": "998483956421-rvm3m19hfnp0d49alg9sl7ncgvadiutm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "edu.android.testmypage01",
+            "package_name": "edu.android.testmypage",
             "certificate_hash": "6ca52690607479b7fdb651d50919a5d6d159e4e0"
           }
         },
         {
-          "client_id": "853396032800-h2uamgl8dbe9n4vn0dv9p0i30k1e5ork.apps.googleusercontent.com",
+          "client_id": "998483956421-aao9dnjao66d4fvh4kombevjkjkonrpa.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDNUpg2spOQt4QO7tTlS8_fPcDPTGQ7MRU"
+          "current_key": "AIzaSyBSAeE2cSGR1R14veT5nrB36Ei4FKba-Bs"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "853396032800-h2uamgl8dbe9n4vn0dv9p0i30k1e5ork.apps.googleusercontent.com",
+              "client_id": "998483956421-aao9dnjao66d4fvh4kombevjkjkonrpa.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
