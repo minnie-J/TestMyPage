@@ -14,6 +14,7 @@ package edu.android.testmypage;
         import com.google.firebase.database.ChildEventListener;
         import com.google.firebase.database.DataSnapshot;
         import com.google.firebase.database.DatabaseError;
+        import com.google.firebase.database.DatabaseReference;
         import com.google.firebase.database.FirebaseDatabase;
         import com.google.gson.Gson;
 
@@ -28,7 +29,6 @@ package edu.android.testmypage;
 public class MyPageFragment extends Fragment {
 
     private UserDataDao dao;
-    private Gson gson = new Gson();
     private RecyclerView recycler;
     private List<UserData> essaySrc;
 
@@ -44,49 +44,11 @@ public class MyPageFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
 
-        dao = UserDataDao.getInstance();
 
-
-//            FirebaseDatabase.getInstance().getReference().child("aaa111navercom").addChildEventListener(new ChildEventListener() {
-//                @Override
-//                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                    Object obj = dataSnapshot.getValue();
-////                UserData data = dataSnapshot.getValue(UserData.class);
-//                    String snapshot = String.valueOf(obj);
-//                    Log.i(TAG, "dataSnapshot.getValue(): " + dataSnapshot.getValue());
-//                    UserData data = gson.fromJson(snapshot, UserData.class);
-//                    Log.i(TAG, "String.valueOf(obj): " + snapshot);
-//                    essaySrc.add(data);
-//                    Log.i(TAG, "data.getName(): " + data.getName());
-//                    int size = essaySrc.size();
-//                    Log.i(TAG, "essaySrc.size(): " + size);
-//
-//                }
-//
-//                @Override
-//                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//
-//                }
-//
-//                @Override
-//                public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//                }
-//
-//                @Override
-//                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//                }
-//
-//                @Override
-//                public void onCancelled(DatabaseError databaseError) {
-//
-//                }
-//            });
-
+//        dao = UserDataDao.getInstance();
 
         View view = inflater.inflate(R.layout.fragment_my_page, container, false);
-//        essaySrc = dao.getInstance().getUserData();
+        essaySrc = dao.getInstance().getUserData();
 
 //        TextView textView = view.findViewById(R.id.textView);
 //        textView.setText(essaySrc.get(0).getName());
@@ -124,12 +86,12 @@ public class MyPageFragment extends Fragment {
             holder.textTitle.setText(userData.getTitle());
             holder.textLocation.setText(userData.getLocInEssay().toString());
             holder.textDate.setText(userData.getRecDate());
-            // TODO: onClick - 클릭했을 때 글하나 불러오는
+            // TODO: onClick - 클릭했을 때 글 하나 읽어오기
         }
 
         @Override
         public int getItemCount() {
-            int size = dao.getUserDataSize();
+            int size = essaySrc.size();
             Log.i(TAG, "essaySrc.size(): " + size);
             return size;
 
@@ -142,6 +104,7 @@ public class MyPageFragment extends Fragment {
 
             public ViewHolder(View itemView) {
                 super(itemView);
+                Log.i(TAG, "ViewHolder");
                 textTitle = itemView.findViewById(R.id.textTitle);
                 textLocation = itemView.findViewById(R.id.textLocation);
                 textDate = itemView.findViewById(R.id.textDate);

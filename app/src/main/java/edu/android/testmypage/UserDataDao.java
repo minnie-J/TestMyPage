@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
@@ -16,43 +17,29 @@ import static edu.android.testmypage.MainActivity.TAG;
 
 public class UserDataDao {
 
-    private List<UserData> userData = new ArrayList<>();
-    private static UserDataDao instance = null;
     private Gson gson = new Gson();
+    private static UserDataDao instance = null;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference myRef = database.getReference();
+    private List<UserData> essaySrc = new ArrayList<>();
 
     private UserDataDao() {
         getAllUserData();
     }
 
     private void getAllUserData() {
-        FirebaseDatabase.getInstance().getReference().child("aaa111navercom").addChildEventListener(new ChildEventListener() {
+        myRef.child("aaa111navercom").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Object obj = dataSnapshot.getValue();
+                Log.i(TAG, "dataSnapshot.getValue(): " + dataSnapshot.getValue());
 //                UserData data = dataSnapshot.getValue(UserData.class);
                 String snapshot = String.valueOf(obj);
-                Log.i(TAG, "dataSnapshot.getValue(): " + dataSnapshot.getValue());
                 UserData data = gson.fromJson(snapshot, UserData.class);
-                Log.i(TAG, "String.valueOf(obj): " + snapshot);
-                userData.add(data);
-                Log.i(TAG, "data.getName(): " + data.getName());
-                int size = userData.size();
-                Log.i(TAG, "userData.size(): " + size);
-
-//                UserData data = dataSnapshot.getValue(UserData.class);
-//                Log.i(TAG, "data.getName: " + data.getName());
-//
-//                String userId = data.getUserId();
-//                String userName = data.getName();
-//                List<Double> location = data.getLocInEssay();
-//                String title = data.getTitle();
-//                String photoUrl = data.getPhotoInEssay();
-//                String content = data.getContent();
-//                String date = data.getRecDate();
-//                UserData data1 = new UserData
-//                        (userId, userName, photoUrl, location, title, content, date);
-//
-//                userData.add(data1);
+                essaySrc.add(data);
+                Log.i(TAG, "data.getName(): " + data.getTitle());
+                int size = essaySrc.size();
+                Log.i(TAG, "essaySrc.size(): " + size);
 
             }
 
@@ -79,7 +66,7 @@ public class UserDataDao {
     }
 
     public List<UserData> getUserData() {
-        return userData;
+        return essaySrc;
     }
 
     public static UserDataDao getInstance() {
@@ -90,7 +77,4 @@ public class UserDataDao {
         return instance;
     }
 
-    public int getUserDataSize(){
-        return userData.size();
-    }
 }
