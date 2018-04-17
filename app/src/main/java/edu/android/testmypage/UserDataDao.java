@@ -21,13 +21,13 @@ public class UserDataDao {
     private static UserDataDao instance = null;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference myRef = database.getReference();
-    private List<UserData> essaySrc = new ArrayList<>();
+    public static List<UserData> essaySrc = new ArrayList<>();
 
     private UserDataDao() {
         getAllUserData();
     }
 
-    private void getAllUserData() {
+    public void getAllUserData() {
         myRef.child("aaa111navercom").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -40,6 +40,8 @@ public class UserDataDao {
                 Log.i(TAG, "data.getName(): " + data.getTitle());
                 int size = essaySrc.size();
                 Log.i(TAG, "essaySrc.size(): " + size);
+                Log.i("ggg","데이터 받아옴");
+
 
             }
 
@@ -66,6 +68,8 @@ public class UserDataDao {
     }
 
     public List<UserData> getUserData() {
+
+
         return essaySrc;
     }
 
@@ -76,5 +80,7 @@ public class UserDataDao {
         }
         return instance;
     }
+
+
 
 }

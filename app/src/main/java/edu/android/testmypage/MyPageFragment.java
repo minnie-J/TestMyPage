@@ -18,6 +18,7 @@ package edu.android.testmypage;
         import com.google.firebase.database.FirebaseDatabase;
         import com.google.gson.Gson;
 
+        import java.util.ArrayList;
         import java.util.List;
 
         import static edu.android.testmypage.MainActivity.TAG;
@@ -31,6 +32,9 @@ public class MyPageFragment extends Fragment {
     private UserDataDao dao;
     private RecyclerView recycler;
     private List<UserData> essaySrc;
+    public static EssayAdapter adapter;
+    private DatabaseReference reference;
+    private Gson gson = new Gson();
 
 
     public MyPageFragment() {
@@ -46,9 +50,13 @@ public class MyPageFragment extends Fragment {
 
 
 //        dao = UserDataDao.getInstance();
-
+        dao = UserDataDao.getInstance();
         View view = inflater.inflate(R.layout.fragment_my_page, container, false);
-        essaySrc = dao.getInstance().getUserData();
+        dao.getAllUserData();
+        essaySrc = new ArrayList<>();
+
+        Log.i("ggg","데이터 받고 난 후");
+
 
 //        TextView textView = view.findViewById(R.id.textView);
 //        textView.setText(essaySrc.get(0).getName());
@@ -57,15 +65,58 @@ public class MyPageFragment extends Fragment {
         recycler.setHasFixedSize(true);
 
         recycler.setLayoutManager(new LinearLayoutManager(getContext()));
-        EssayAdapter adapter = new EssayAdapter();
+        adapter = new EssayAdapter();
         recycler.setAdapter(adapter);
 
         return view;
+
+
     }
+
 
     @Override
     public void onStart() {
         super.onStart();
+        reference = FirebaseDatabase.getInstance().getReference();
+
+        reference.child("aaa111navercom").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Object obj = dataSnapshot.getValue();
+                Log.i(TAG, "dataSnapshot.getValue(): " + dataSnapshot.getValue());
+//                UserData data = dataSnapshot.getValue(UserData.class);
+                String snapshot = String.valueOf(obj);
+                UserData data = gson.fromJson(snapshot, UserData.class);
+                essaySrc.add(data);
+                Log.i(TAG, "data.getName(): " + data.getTitle());
+                int size = essaySrc.size();
+                Log.i(TAG, "essaySrc.size(): " + size);
+                Log.i("ggg","데이터 받아옴");
+                adapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     class EssayAdapter extends RecyclerView.Adapter<EssayAdapter.ViewHolder> {
@@ -93,7 +144,7 @@ public class MyPageFragment extends Fragment {
         public int getItemCount() {
             int size = essaySrc.size();
             Log.i(TAG, "essaySrc.size(): " + size);
-            return size;
+            return essaySrc.size();
 
         }
 
