@@ -1,6 +1,8 @@
 package edu.android.testmypage;
 
 
+        import android.graphics.drawable.ShapeDrawable;
+        import android.graphics.drawable.shapes.OvalShape;
         import android.os.Bundle;
         import android.support.v4.app.Fragment;
         import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +11,7 @@ package edu.android.testmypage;
         import android.view.LayoutInflater;
         import android.view.View;
         import android.view.ViewGroup;
+        import android.widget.ImageView;
         import android.widget.TextView;
 
         import com.google.firebase.database.ChildEventListener;
@@ -22,6 +25,7 @@ package edu.android.testmypage;
         import java.util.List;
 
         import static edu.android.testmypage.MainActivity.TAG;
+        import static edu.android.testmypage.R.drawable.android_2_3_ginerbread;
 
 
 /**
@@ -35,6 +39,7 @@ public class MyPageFragment extends Fragment {
     public static EssayAdapter adapter;
     private DatabaseReference reference;
     private Gson gson = new Gson();
+    private String userName;
 
 
     public MyPageFragment() {
@@ -53,13 +58,20 @@ public class MyPageFragment extends Fragment {
         dao = UserDataDao.getInstance();
         View view = inflater.inflate(R.layout.fragment_my_page, container, false);
         dao.getAllUserData();
+        final ImageView imageBtn = view.findViewById(R.id.imageView);
+        imageBtn.setBackground(new ShapeDrawable(new OvalShape()));
+        imageBtn.setClipToOutline(true);
+
+        imageBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageBtn.setImageResource(R.drawable.android_2_3_ginerbread);
+            }
+        });
+
         essaySrc = new ArrayList<>();
 
         Log.i("ggg","데이터 받고 난 후");
-
-
-//        TextView textView = view.findViewById(R.id.textView);
-//        textView.setText(essaySrc.get(0).getName());
 
         recycler = view.findViewById(R.id.essay_list);
         recycler.setHasFixedSize(true);
@@ -93,6 +105,10 @@ public class MyPageFragment extends Fragment {
                 Log.i(TAG, "essaySrc.size(): " + size);
                 Log.i("ggg","데이터 받아옴");
                 adapter.notifyDataSetChanged();
+                userName = data.getName();
+                TextView textView = getView().findViewById(R.id.textView);
+                textView.setText(userName);
+                Log.i(TAG, "유저이름1: " + userName);
 
             }
 
