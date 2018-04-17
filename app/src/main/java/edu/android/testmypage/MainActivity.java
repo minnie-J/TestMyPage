@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-//import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -39,9 +38,6 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "11111111111");
 
 
-
-
-
 //        Contact contact = new Contact("KSJ","KIMMY","My pic");
 
 //        List<Double> loc03 = new ArrayList<>();
@@ -53,8 +49,21 @@ public class MainActivity extends AppCompatActivity {
 //        myRef.child("aaa111navercom").push().setValue(userData03);
     }
 
+    // https://m.blog.naver.com/cosmosjs/220975116725
+
+    public void clickedProImgBotton() {
+        Log.i(TAG, "메인 clickedProImgBotton()");
+        Intent intent = new Intent();
+        intent.setType("images/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "이미지를 선택하세요. "), 0);
+        Log.i(TAG, "intent: " + intent.getData());
+//        uploadFile();
+    } // end clickedProImgBotton()
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i(TAG, "onActivityResult 호출");
         super.onActivityResult(requestCode, resultCode, data);
         // request코드가 0이고 OK를 선택했고 data에 뭔가가 들어 있다면
         if(requestCode == 0 && resultCode == RESULT_OK) {
@@ -71,57 +80,54 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void clickedProImgBotton() {
-        Intent intent = new Intent();
-        intent.setType("images/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "이미지를 선택하세요. "), 0);
-        uploadFile();
-    } // end clickedProImgBotton()
+
 
     private void uploadFile() {
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("업로드중...");
-        progressDialog.show();
+        if (filePath != null) {
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("업로드중...");
+            progressDialog.show();
 
-        // storage
-        FirebaseStorage storage = FirebaseStorage.getInstance();
+            // storage
+            FirebaseStorage storage = FirebaseStorage.getInstance();
 
 
-        // 파일명 지정
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMHH_mmss");
-        Date curDate = new Date();
-        String filename = dateFormat.format(curDate) + ".png";
+            // 파일명 지정
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMHH_mmss");
+            Date curDate = new Date();
+            String filename = dateFormat.format(curDate) + ".png";
 
-        // storage 주소와 폴더, 파일명 지정
-//        StorageReference storageRef = storage.getReferenceFromUrl("gs://testmypage-f314b.appspot.com/").child("images/" + filename);
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://testmypage-f314b.appspot.com/").child("images/" + filename);
-        storageRef.putFile(filePath)
-                // 성공했을 때
-                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                progressDialog.dismiss();
-                Toast.makeText(getApplicationContext(), "업로드 완료!", Toast.LENGTH_SHORT).show();
+            // storage 주소와 폴더, 파일명 지정
+            StorageReference storageRef = storage.getReferenceFromUrl("gs://testmypage-f314b.appspot.com/").child("images/" + filename);
+            storageRef.putFile(filePath)
+                    // 성공했을 때
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    progressDialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "업로드 완료!", Toast.LENGTH_SHORT).show();
 
-            }
-        })
-                // 실패했을 때
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        progressDialog.dismiss();
-                        Toast.makeText(getApplicationContext(), "업로드 실패..", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                // 진행중..
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        @SuppressWarnings("VisibleForTests")
-                                double progress = (100 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                        progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-                    }
-                });
+                }
+            })
+                    // 실패했을 때
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "업로드 실패..", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    // 진행중..
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            @SuppressWarnings("VisibleForTests")
+                                    double progress = (100 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                            progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
+                        }
+                    });
+        } else {
+            Toast.makeText(getApplicationContext(), "파일을 먼저 선택하세요.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

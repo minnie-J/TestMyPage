@@ -1,6 +1,8 @@
 package edu.android.testmypage;
 
 
+        import android.content.Context;
+        import android.content.Intent;
         import android.graphics.drawable.ShapeDrawable;
         import android.graphics.drawable.shapes.OvalShape;
         import android.os.Bundle;
@@ -47,6 +49,11 @@ public class MyPageFragment extends Fragment {
     }
 
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+//
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,9 +72,17 @@ public class MyPageFragment extends Fragment {
         imageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageBtn.setImageResource(R.drawable.android_2_3_ginerbread);
+//                imageBtn.setImageResource(R.drawable.android_2_3_ginerbread);
+
+                ((MainActivity)getActivity()).clickedProImgBotton();
+//                startActivityForResult(Intent.createChooser(intent, "이미지를 선택하세요. "), 0);
+//                ((MainActivity)getActivity()).onActivityResult();
+
+
+                Log.i(TAG, "프래그먼트 clickedProImgBotton() 클릭 이후");
             }
         });
+
 
         essaySrc = new ArrayList<>();
 
