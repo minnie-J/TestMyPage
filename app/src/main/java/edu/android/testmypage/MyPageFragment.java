@@ -3,9 +3,12 @@ package edu.android.testmypage;
 
         import android.content.Context;
         import android.content.Intent;
+        import android.graphics.Bitmap;
         import android.graphics.drawable.ShapeDrawable;
         import android.graphics.drawable.shapes.OvalShape;
+        import android.net.Uri;
         import android.os.Bundle;
+        import android.provider.MediaStore;
         import android.support.v4.app.Fragment;
         import android.support.v7.widget.LinearLayoutManager;
         import android.support.v7.widget.RecyclerView;
@@ -23,9 +26,11 @@ package edu.android.testmypage;
         import com.google.firebase.database.FirebaseDatabase;
         import com.google.gson.Gson;
 
+        import java.io.IOException;
         import java.util.ArrayList;
         import java.util.List;
 
+        import static android.app.Activity.RESULT_OK;
         import static edu.android.testmypage.MainActivity.TAG;
         import static edu.android.testmypage.R.drawable.android_2_3_ginerbread;
 
@@ -48,7 +53,6 @@ public class MyPageFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -59,9 +63,6 @@ public class MyPageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
-
-
-//        dao = UserDataDao.getInstance();
         dao = UserDataDao.getInstance();
         View view = inflater.inflate(R.layout.fragment_my_page, container, false);
         dao.getAllUserData();
@@ -72,21 +73,15 @@ public class MyPageFragment extends Fragment {
         imageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                imageBtn.setImageResource(R.drawable.android_2_3_ginerbread);
 
                 ((MainActivity)getActivity()).clickedProImgBotton();
-//                startActivityForResult(Intent.createChooser(intent, "이미지를 선택하세요. "), 0);
-//                ((MainActivity)getActivity()).onActivityResult();
 
+                Log.i(TAG, "intent: ");
 
-                Log.i(TAG, "프래그먼트 clickedProImgBotton() 클릭 이후");
             }
         });
 
-
         essaySrc = new ArrayList<>();
-
-        Log.i("ggg","데이터 받고 난 후");
 
         recycler = view.findViewById(R.id.essay_list);
         recycler.setHasFixedSize(true);
@@ -104,8 +99,9 @@ public class MyPageFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        reference = FirebaseDatabase.getInstance().getReference();
 
+
+        reference = FirebaseDatabase.getInstance().getReference();
         reference.child("aaa111navercom").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
