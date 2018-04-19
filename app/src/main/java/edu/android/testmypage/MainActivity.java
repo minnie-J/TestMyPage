@@ -135,26 +135,30 @@ public class MainActivity extends AppCompatActivity {
     private void uploadFile() {
         if (filePath != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("업로드중...");
+            progressDialog.setTitle("프로필 사진 업데이트 중...");
             progressDialog.show();
 
             // storage
             FirebaseStorage storage = FirebaseStorage.getInstance();
 
             // 파일명 지정
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMHH_mmss");
-            Date curDate = new Date();
-            String filename = dateFormat.format(curDate) + ".png";
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMHH_mmss");
+//            Date curDate = new Date();
+//            String filename = dateFormat.format(curDate) + ".png";
+            String filename = "curProImg.jpg";
 
             // storage 주소와 폴더, 파일명 지정
             StorageReference storageRef = storage.getReferenceFromUrl("gs://testmypage-f314b.appspot.com/").child("images/" + filename);
             storageRef.putFile(filePath)
+
                     // 성공했을 때
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     progressDialog.dismiss();
-                    Toast.makeText(getApplicationContext(), "업로드 완료!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "업데이트 완료!", Toast.LENGTH_SHORT).show();
+                    Uri downloadUri = taskSnapshot.getDownloadUrl();
+                    String s = downloadUri.toString();
 
                 }
             })
@@ -163,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "업로드 실패..", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "업데이트 실패..", Toast.LENGTH_SHORT).show();
                         }
                     })
                     // 진행중..
@@ -176,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         } else {
-            Toast.makeText(getApplicationContext(), "파일을 먼저 선택하세요.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "사진을 먼저 선택하세요.", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -1,14 +1,13 @@
 package edu.android.testmypage;
 
 
+        import android.app.ProgressDialog;
         import android.content.Context;
-        import android.content.Intent;
         import android.graphics.Bitmap;
+        import android.graphics.BitmapFactory;
         import android.graphics.drawable.ShapeDrawable;
         import android.graphics.drawable.shapes.OvalShape;
-        import android.net.Uri;
         import android.os.Bundle;
-        import android.provider.MediaStore;
         import android.support.v4.app.Fragment;
         import android.support.v7.widget.LinearLayoutManager;
         import android.support.v7.widget.RecyclerView;
@@ -19,20 +18,23 @@ package edu.android.testmypage;
         import android.widget.ImageView;
         import android.widget.TextView;
 
+        import com.google.android.gms.tasks.OnSuccessListener;
         import com.google.firebase.database.ChildEventListener;
         import com.google.firebase.database.DataSnapshot;
         import com.google.firebase.database.DatabaseError;
         import com.google.firebase.database.DatabaseReference;
         import com.google.firebase.database.FirebaseDatabase;
+        import com.google.firebase.storage.FileDownloadTask;
+        import com.google.firebase.storage.FirebaseStorage;
+        import com.google.firebase.storage.StorageReference;
         import com.google.gson.Gson;
 
+        import java.io.File;
         import java.io.IOException;
         import java.util.ArrayList;
         import java.util.List;
 
-        import static android.app.Activity.RESULT_OK;
         import static edu.android.testmypage.MainActivity.TAG;
-        import static edu.android.testmypage.R.drawable.android_2_3_ginerbread;
 
 
 /**
@@ -47,6 +49,8 @@ public class MyPageFragment extends Fragment {
     private DatabaseReference reference;
     private Gson gson = new Gson();
     private String userName;
+    private String imgUri;
+    private Bitmap bitmap;
 
 
     public MyPageFragment() {
@@ -59,9 +63,37 @@ public class MyPageFragment extends Fragment {
 //
     }
 
+    private String getProImg() {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReferenceFromUrl("gs://testmypage-f314b.appspot.com/");
+
+        StorageReference pathReference = storageReference.child("images/curProImg.jpg");
+//        pathReference.getDownloadUrl()
+
+        try {
+            final File localFile = File.createTempFile("images", "jpg");
+            pathReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    imgUri = localFile.getPath();
+                    Log.i(TAG, "imgUri: " + imgUri);
+
+                    bitmap = BitmapFactory.decodeFile(imgUri);
+                    ImageView imageView = getView().findViewById(R.id.imageView);
+                    imageView.setImageBitmap(bitmap);
+
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return imgUri;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         Log.i(TAG, "onCreateView");
         dao = UserDataDao.getInstance();
         View view = inflater.inflate(R.layout.fragment_my_page, container, false);
@@ -69,6 +101,8 @@ public class MyPageFragment extends Fragment {
         final ImageView imageBtn = view.findViewById(R.id.imageView);
         imageBtn.setBackground(new ShapeDrawable(new OvalShape()));
         imageBtn.setClipToOutline(true);
+
+        getProImg();
 
         imageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,51 +133,55 @@ public class MyPageFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        if (essaySrc.size() == 0) {
 
+            final ProgressDialog progressDialog = new ProgressDialog(getContext());
+//        progressDialog.setTitle("테스트 중...");
+            progressDialog.setMessage("로딩 중...");
+            progressDialog.show();
 
-        reference = FirebaseDatabase.getInstance().getReference();
-        reference.child("aaa111navercom").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Object obj = dataSnapshot.getValue();
-                Log.i(TAG, "dataSnapshot.getValue(): " + dataSnapshot.getValue());
-//                UserData data = dataSnapshot.getValue(UserData.class);
-                String snapshot = String.valueOf(obj);
-                UserData data = gson.fromJson(snapshot, UserData.class);
-                essaySrc.add(data);
-                Log.i(TAG, "data.getName(): " + data.getTitle());
-                int size = essaySrc.size();
-                Log.i(TAG, "essaySrc.size(): " + size);
-                Log.i("ggg","데이터 받아옴");
-                adapter.notifyDataSetChanged();
-                userName = data.getName();
-                TextView textView = getView().findViewById(R.id.textView);
-                textView.setText(userName);
-                Log.i(TAG, "유저이름1: " + userName);
+            reference = FirebaseDatabase.getInstance().getReference();
+            reference.child("aaa111navercom").addChildEventListener(new ChildEventListener() {
 
-            }
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Object obj = dataSnapshot.getValue();
+                    String snapshot = String.valueOf(obj);
+                    UserData data = gson.fromJson(snapshot, UserData.class);
+                    essaySrc.add(data);
+                    adapter.notifyDataSetChanged();
+                    userName = data.getName();
+                    TextView textView = getView().findViewById(R.id.textView);
+                    textView.setText(userName);
+                    Log.i(TAG, "유저이름1: " + userName);
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    progressDialog.dismiss();
+                }
 
-            }
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                }
 
-            }
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                }
 
-            }
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                }
 
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
+                }
+
+            });
+        }
+
+//        progressDialog.dismiss();
     }
 
     class EssayAdapter extends RecyclerView.Adapter<EssayAdapter.ViewHolder> {
