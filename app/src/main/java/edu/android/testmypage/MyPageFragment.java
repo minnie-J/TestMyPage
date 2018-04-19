@@ -71,7 +71,8 @@ public class MyPageFragment extends Fragment {
 //        pathReference.getDownloadUrl()
 
         try {
-            final File localFile = File.createTempFile("images", "jpg");
+//            final File localFile = File.createTempFile("images", "jpg");
+            final File localFile = File.createTempFile("curProImg", null, getContext().getCacheDir());
             pathReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {

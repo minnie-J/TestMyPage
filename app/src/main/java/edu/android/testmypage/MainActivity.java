@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     Fragment fragment =fm.findFragmentById(R.id.fragment);
                     ImageView imageView = fragment.getActivity().findViewById(R.id.imageView);
                     Glide.with(this).load(filePath).into(imageView);
+//                    Glide.with(MainActivity.this).load(downloadUri).into(imageView);
 
                     uploadFile();
 
